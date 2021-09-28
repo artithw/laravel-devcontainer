@@ -1,0 +1,55 @@
+version: "3.9"
+services:
+  cli:
+    build: cli
+    volumes:
+      - ../myapp:/workspaces/laravel
+
+  fpm:
+    build: fpm
+    volumes:
+      - ../myapp:/workspaces/laravel
+    user: 1000:1000
+
+  nginx:
+    build: nginx
+    volumes:
+      - ../myapp:/workspaces/laravel
+    ports:
+      - 80:80
+    depends_on:
+      - fpm
+
+  # postgres:
+  #   image: postgres:13-alpine
+  #   environment:
+  #     POSTGRES_DB: laravel
+  #     POSTGRES_USER: root
+  #     POSTGRES_PASSWORD: root
+  #     POSTGRES_HOST_AUTH_METHOD: trust
+
+  # pgadmin:
+  #     container_name: pgadmin4_container
+  #     image: dpage/pgadmin4
+  #     restart: always
+  #     environment:
+  #       PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #       PGADMIN_DEFAULT_PASSWORD: root
+  #     ports:
+  #       - "5050:80"
+
+  mysql:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis:6.2-alpine
+
